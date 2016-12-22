@@ -29,9 +29,11 @@ app.get('/home', (req, res) => {
   req.session.name = "todo list";
   console.log(req.session)
   var data = {};
+  
 
 
-  var url = 'http://ip-api.com/json/208.80.152.201';
+  var url = 'http://ip-api.com/json/'+ip;
+  //  var url = 'http://ip-api.com/json/208.80.152.201';
 
   request({
     url: url,
