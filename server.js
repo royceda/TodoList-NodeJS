@@ -29,7 +29,7 @@ app.get('/home', (req, res) => {
   req.session.name = "todo list";
   console.log(req.session)
   var data = {};
-  
+
 
 
   var url = 'http://ip-api.com/json/'+ip;
@@ -56,7 +56,8 @@ app.get('/home', (req, res) => {
     address: ip,
     data: req.session.name,
     lon: req.sessionOptions.lon,
-    lat: req.sessionOptions.lat});
+    lat: req.sessionOptions.lat,
+    url: url });
   })
 
 
