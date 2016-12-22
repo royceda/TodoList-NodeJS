@@ -79,5 +79,6 @@ app.get('/home', (req, res) => {
     res.redirect('/home');
   });
 
-  console.log("The magic port is 8888");
-  app.listen(process.env.PORT || 8888);
+  var port = process.env.PORT || 8888
+  console.log("The magic port is "+port);
+  app.listen(port);
