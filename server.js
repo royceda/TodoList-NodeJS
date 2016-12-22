@@ -80,4 +80,4 @@ app.get('/home', (req, res) => {
   });
 
   console.log("The magic port is 8888");
-  app.listen(8888);
+  app.listen(process.env.PORT || 8888);
