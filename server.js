@@ -17,6 +17,7 @@ app.use(cookieSession({
   keys: ['secret'],
   data: 'hello world',
 }))
+.use(express.static(__dirname + '/public'))
 .use((req,res, next) => {
   if(typeof(req.session.todolist) == 'undefined'){
     req.session.todolist = [];
