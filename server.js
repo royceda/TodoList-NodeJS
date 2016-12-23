@@ -2,9 +2,11 @@ var express = require('express');
 var cookieSession = require('cookie-session');
 var request = require('request');
 var fs = require('fs');
-var jf = require('jsonfile');
 var bodyParser = require('body-parser');
-//var request = require('sync-request');
+
+
+
+
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false});
 
@@ -12,6 +14,19 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false});
 var app = express();
 console.log("Todo list with NodeJS");
 
+//Using socket.io with express
+var server = require('http').Server(app);
+var io = require("socket.io").listen(server);
+
+
+//console.log(io);
+io.sockets.on('connection', (socket) =>{
+  console.log('New client...'+socket);
+  socket.emit('message', 'you are connected !!')
+});
+
+
+//Configure app
 app.use(cookieSession({
   name: 'session Test',
   keys: ['secret'],
@@ -30,8 +45,6 @@ app.get('/home', (req, res) => {
   req.session.name = "todo list";
   console.log(req.session)
   var data = {};
-
-
 
   var url = 'http://ip-api.com/json/'+ip;
   //  var url = 'http://ip-api.com/json/208.80.152.201';
@@ -82,6 +95,13 @@ app.get('/home', (req, res) => {
   .use((req, res, next) => {
     res.redirect('/home');
   });
+
+
+
+
+
+
+
 
   var port = process.env.PORT || 8888
   console.log("The magic port is "+port);

@@ -60,6 +60,21 @@
 
 
 
+<!-- Socket -->
+<script src="http://localhost:8888/socket.io/socket.io.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.socket.io/socket.io-1.0.0.js"></script>
+<script>
+  var socket = io.connect('http://localhost:8888');
+  console.log("socket "+socket);
+  socket.on('message', (message) => {
+    alert('From server : '+ message);
+  });
+</script>
+
+
+
+<!-- Google map -->
 <script>
 function initMap() {
   var uluru = {lat: <%= lat %>, lng: <%= lon %>};
