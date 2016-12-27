@@ -38,7 +38,7 @@ app.get('/home', (req, res) => {
   console.log(req.session)
 
   var data = {};
-  var coord = require('./extension').coord(ip);
+  var coord = require('./extension').coord('208.80.152.201');
 
   req.sessionOptions.lon = coord.lon;
   req.sessionOptions.lat = coord.lat;
@@ -50,35 +50,48 @@ app.get('/home', (req, res) => {
     lat: req.sessionOptions.lat,
     ip: require('./extension').addresses()[0],
     port:  port});
-}).get('/chat', (req,res) => {
-  res.render('chat.ejs', {param: "toto"});
-})
-.use((req, res, next) => {
-  res.redirect('/home');
-});
+  })
+  .post('/todo/add/', urlencodedParser, (req, res) => {
+    if(req.body.task != ''){
+      console.log("Task "+req.body.task + " Added");
+      req.session.todolist.push(req.body.task);
+    }
+    res.redirect('/home');
+  })
+  .get('/todo/delete/:id', (req,res) => {
+    //deleting
+    if(req.params.id != ''){
+      req.session.todolist.splice(req.params.id, 1);
+    }
+    res.redirect('/home');
+  })
+  .get('/chat', (req,res) => {
+    res.render('chat.ejs', {param: "toto"});
+  })
+  .use((req, res, next) => {
+    res.redirect('/home');
+  });
 
 
-
-
-//socket
-io.sockets.on('connection', (socket, name) => {
+  //Socket
+  io.sockets.on('connection', (socket, name) => {
     // Dès qu'on nous donne un pseudo, on le stocke en variable de session et on informe les autres personnes
     socket.on('new_client', (name) => {
       console.log("new client : "+name);
-        name = ent.encode(name);
-        socket.name = name;
-        socket.broadcast.emit('new_client', name);
+      name = ent.encode(name);
+      socket.name = name;
+      socket.broadcast.emit('new_client', name);
     });
 
     // Dès qu'on reçoit un message, on récupère le pseudo de son auteur et on le transmet aux autres personnes
     socket.on('message', (message) => {
       console.log("message : "+message)
-        message = ent.encode(message);
-        socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message});
+      message = ent.encode(message);
+      socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message});
     });
-});
+  });
 
 
 
-console.log("The magic port : "+port);
-server.listen(port);
+  console.log("The magic port : 8888");
+  server.listen(8888);
