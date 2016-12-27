@@ -30,21 +30,21 @@
         <script>
 
             // Connexion à socket.io
-            var socket = io.connect('http://localhost:8888');
+            var socket = io.connect('http://localhost:'+<%=port%>);
 
             // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
             var pseudo = prompt('What is your name?');
-            socket.emit('new_client', pseudo);
-            document.title = pseudo + ' - ' + document.title;
+            socket.emit('new_client', name);
+            document.title = name + ' - ' + document.title;
 
             // Quand on reçoit un message, on l'insère dans la page
             socket.on('message', (data) => {
-                insereMessage(data.pseudo, data.message)
+                insereMessage(data.name, data.message)
             });
 
             // Quand un nouveau client se connecte, on affiche l'information
-            socket.on('new_client', (pseudo) => {
-                $('#zone_chat').prepend('<p><em>' + pseudo + ' a rejoint le Chat !</em></p>');
+            socket.on('new_client', (name) => {
+                $('#zone_chat').prepend('<p><em>' + name + 'is connected !</em></p>');
             });
 
             // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page

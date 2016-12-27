@@ -38,7 +38,7 @@ app.get('/home', (req, res) => {
   console.log(req.session)
 
   var data = {};
-  var coord = require('./extension').coord('208.80.152.201');
+  var coord = require('./extension').coord(ip);
 
   req.sessionOptions.lon = coord.lon;
   req.sessionOptions.lat = coord.lat;
@@ -66,7 +66,7 @@ app.get('/home', (req, res) => {
     res.redirect('/home');
   })
   .get('/chat', (req,res) => {
-    res.render('chat.ejs', {param: "toto"});
+    res.render('chat.ejs', {port: port});
   })
   .use((req, res, next) => {
     res.redirect('/home');
@@ -75,19 +75,21 @@ app.get('/home', (req, res) => {
 
   //Socket
   io.sockets.on('connection', (socket, name) => {
-    // Dès qu'on nous donne un pseudo, on le stocke en variable de session et on informe les autres personnes
+
+    // Once we get a username, It saves in a session variable
     socket.on('new_client', (name) => {
       console.log("new client : "+name);
-      name = ent.encode(name);
-      socket.name = name;
+      socket.name = ent.encode(name);
+      //socket.name = name;
       socket.broadcast.emit('new_client', name);
     });
 
-    // Dès qu'on reçoit un message, on récupère le pseudo de son auteur et on le transmet aux autres personnes
+
+    // Once a message is received, we broadcast
     socket.on('message', (message) => {
       console.log("message : "+message)
       message = ent.encode(message);
-      socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message});
+      socket.broadcast.emit('message', {name: socket.name, message: message});
     });
   });
 
