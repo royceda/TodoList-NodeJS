@@ -80,5 +80,5 @@ io.sockets.on('connection', (socket, name) => {
 
 
 
-console.log("The magic port : 8888");
-server.listen(8888);
+console.log("The magic port : "+port);
+server.listen(port);
