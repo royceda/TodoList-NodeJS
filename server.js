@@ -8,12 +8,22 @@ fs = require('fs');
 
 var bodyParser    = require('body-parser');
 var cookieSession = require('cookie-session');
+var Task          = require('./models/task');
+
+
+//request.flash("success", "Merci !!");
 
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false});
 var port             = process.env.PORT || 8888
 
 console.log("Todo list with NodeJS");
+
+
+Task.all((tasks) => {
+  console.log(tasks[0]);
+});
+
 
 //Configure app
 app.use(cookieSession({
@@ -43,6 +53,14 @@ app.get('/home', (req, res) => {
   req.sessionOptions.lon = coord.lon;
   req.sessionOptions.lat = coord.lat;
 
+  Task.all((tasks) => {
+    req.session.todolist = [];
+    tasks.forEach((task)=>{
+      console.log("task : "+ task.ID);
+      req.session.todolist.push(task);
+    });
+  });
+
   res.render('index.ejs', {list: req.session.todolist,
     address: ip,
     data: req.session.name,
@@ -50,18 +68,26 @@ app.get('/home', (req, res) => {
     lat: req.sessionOptions.lat,
     ip: require('./extension').addresses()[0],
     port:  port});
+    //response.render('index.ejs',tasks);
+
   })
   .post('/todo/add/', urlencodedParser, (req, res) => {
     if(req.body.task != ''){
       console.log("Task "+req.body.task + " Added");
-      req.session.todolist.push(req.body.task);
+      Task.create(req.body.task, (err) => {
+        if(err) throw err;
+        //req.session.todolist.push({req.body.task);
+      });
     }
     res.redirect('/home');
   })
   .get('/todo/delete/:id', (req,res) => {
     //deleting
     if(req.params.id != ''){
-      req.session.todolist.splice(req.params.id, 1);
+      Task.delete(req.params.id, (err) => {
+        if (err) throw err;
+        //req.session.todolist.splice(req.params.id, 1);
+      });
     }
     res.redirect('/home');
   })

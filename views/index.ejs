@@ -38,10 +38,10 @@
           <span class="badge"></span>
           My todo List
         </li>
-        <% list.forEach(function(task, index){ %>
+        <% list.forEach(function(task){ %>
           <li class="list-group-item">
-          <span class="badge"><a  href="/todo/delete/<%= index %>">X</a></span>
-          <%= task %>
+          <span class="badge"><a  href="/todo/delete/<%= task.ID %>">X</a></span>
+          <%= task.content %>
           </li>
           <% });%>
         </ul>
