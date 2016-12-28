@@ -38,6 +38,7 @@ app.use(cookieSession({
   }
   next();
 });
+//.use(require('./middleware/flash.js'));
 
 
 
@@ -76,20 +77,23 @@ app.get('/home', (req, res) => {
       console.log("Task "+req.body.task + " Added");
       Task.create(req.body.task, (err) => {
         if(err) throw err;
+        req.flash("success", "nice task" );
         //req.session.todolist.push({req.body.task);
+        res.redirect('/home');
       });
     }
-    res.redirect('/home');
+
   })
   .get('/todo/delete/:id', (req,res) => {
     //deleting
     if(req.params.id != ''){
       Task.delete(req.params.id, (err) => {
         if (err) throw err;
+        req.flash("warning", "Nice Delete !!!");
         //req.session.todolist.splice(req.params.id, 1);
+        res.redirect('/home');
       });
     }
-    res.redirect('/home');
   })
   .get('/chat', (req,res) => {
     res.render('chat.ejs', {port: port});
